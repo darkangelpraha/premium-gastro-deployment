@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  premium-gastro-web:
+    build: .
+    container_name: premium-gastro-psychological-system
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - SUPABASE_URL=https://lowgijppjapmetedkvjb.supabase.co
+      - SUPABASE_KEY=${SUPABASE_KEY}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - premium-gastro-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: premium-gastro-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./premium_gastro_complete_system.html:/usr/share/nginx/html/index.html
+    depends_on:
+      - premium-gastro-web
+    restart: unless-stopped
+    networks:
+      - premium-gastro-network
+
+networks:
+  premium-gastro-network:
+    driver: bridge
